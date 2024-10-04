@@ -1,40 +1,45 @@
 #include "Renderer.h"
-#include <SDL.h>
+#include "Framebuffer.h"
 #include <iostream>
 
-void Renderer::Initialize()
+bool Renderer::Initialize()
 {
     // initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         std::cerr << "Error initializing SDL: " << SDL_GetError() << std::endl;
+        return false;
     }
+    return true;
 }
 
-void Renderer::CreateWindow(int sizeX, int sizeY, std::string name)
+bool Renderer::CreateWindow(int sizeX, int sizeY, std::string name)
 {
     // create window
     // returns pointer to window if successful or nullptr if failed
-    SDL_Window* window = SDL_CreateWindow(name.c_str(),
+    _window = SDL_CreateWindow(name.c_str(),
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         sizeX, sizeY,
         SDL_WINDOW_SHOWN);
-    if (window == nullptr)
+    if (_window == nullptr)
     {
         std::cerr << "Error creating SDL window: " << SDL_GetError() << std::endl;
         SDL_Quit();
+        return false;
     }
 
     // create renderer
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+    _renderer = SDL_CreateRenderer(_window, -1, 0);
 
-    while (true)
-    {
-        // clear screen
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        SDL_RenderClear(renderer);
+    //store values
+    _width = sizeX;
+    _height = sizeY;
+    _name = name;
 
-        // show screen
-        SDL_RenderPresent(renderer);
-    }
+    return true;
+}
+
+void Renderer::CopyFramebuffer(const Framebuffer& framebuffer)
+{
+    SDL_RenderCopy(_renderer, framebuffer._texture, NULL, NULL);
 }
