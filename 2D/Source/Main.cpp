@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
             //framebuffer.DrawLine(x, y, x2, y2, { (uint8_t)(rand() % 255),(uint8_t)(rand() % 255),(uint8_t)(rand() % 255),255 });
         }
 
-        //framebuffer.DrawRect(50, 10, 100, 100, { 0,255,0,255 });
+        framebuffer.DrawRect(50, 10, 100, 100, { 0,255,0,255 });
         framebuffer.DrawTriangle(50, 50, 100, 100, 75, 12, { 0,255,0,255 });
         framebuffer.Update();
 
