@@ -45,12 +45,13 @@ int main(int argc, char* argv[])
             int y = rand() % framebuffer._height;
             int y2 = rand() % framebuffer._height;
 
-            framebuffer.DrawPoint(x, y, {255,255,255,255});
-            //framebuffer.DrawLine(x, y, x2, y2, { (uint8_t)(rand() % 255),(uint8_t)(rand() % 255),(uint8_t)(rand() % 255),255 });
+            //framebuffer.DrawPoint(x, y, {255,255,255,255});
         }
 
-        framebuffer.DrawRect(50, 10, 100, 100, { 0,255,0,255 });
+        framebuffer.DrawLine(125, 75, 75, 25, { (uint8_t)(rand() % 255),(uint8_t)(rand() % 255),(uint8_t)(rand() % 255),255 });
+        //framebuffer.DrawRect(50, 10, 100, 100, { 0,255,0,255 });
         framebuffer.DrawTriangle(50, 50, 100, 100, 75, 12, { 0,255,0,255 });
+        framebuffer.DrawCircle(100, 50, 25, { 150,150,12,255 });
         framebuffer.Update();
 
         renderer.CopyFramebuffer(framebuffer);

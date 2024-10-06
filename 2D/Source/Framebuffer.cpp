@@ -139,9 +139,41 @@ void Framebuffer::DrawLineSlope(int x1, int y1, int x2, int y2, const color_t& c
 	}
 }
 
-void Framebuffer::DrawCircle(int x, int y, int radius, const color_t& color)
+void Framebuffer::DrawCircle(int xc, int yc, int radius, const color_t& color)
 {
-	
+	int x = 0, y = radius;
+	int d = 3 - 2 * radius;
+	DrawCurve(xc, yc, x, y, color);
+	while (y >= x) {
+
+		// check for decision parameter
+		// and correspondingly 
+		// update d, y
+		if (d > 0) {
+			y--;
+			d = d + 4 * (x - y) + 10;
+		}
+		else { d = d + 4 * x + 6; }
+
+		// Increment x after updating decision parameter
+		x++;
+
+		// Draw the circle using the new coordinates
+		DrawCurve(xc, yc, x, y, color);
+		//delay(50);
+	}
+}
+
+void Framebuffer::DrawCurve(int xc, int yc, int x, int y, const color_t& color)
+{
+	DrawPoint(xc + x, yc + y, color);
+	DrawPoint(xc - x, yc + y, color);
+	DrawPoint(xc + x, yc - y, color);
+	DrawPoint(xc - x, yc - y, color);
+	DrawPoint(xc + y, yc + x, color);
+	DrawPoint(xc - y, yc + x, color);
+	DrawPoint(xc + y, yc - x, color);
+	DrawPoint(xc - y, yc - x, color);
 }
 
 void Framebuffer::DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, const color_t& color)
