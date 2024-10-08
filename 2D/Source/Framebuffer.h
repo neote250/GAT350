@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <vector>
 
+
 using color_t = SDL_Color;
 
 class Framebuffer
@@ -20,6 +21,13 @@ public:
 	void DrawCircle(int xc, int yc, int radius, const color_t& color);
 	void DrawCurve(int xc, int yc, int x, int y, const color_t& color);
 	void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, const color_t& color);
+
+	void DrawLinearCurve(int x1, int y1, int x2, int y2, const color_t& color);
+	void DrawQuadraticCurve(int x1, int y1, int x2, int y2, int x3, int y3, const color_t& color);
+	void DrawCubicCurve(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, const color_t& color);
+
+	void DrawImage(int x, int y, const class Image& image);
+	void DrawImage(int x, int y, int w, int h, const class Image& image);
 
 public:
 	int _width{ 0 };
