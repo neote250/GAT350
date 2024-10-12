@@ -244,7 +244,7 @@ void Framebuffer::DrawCubicCurve(int x1, int y1, int x2, int y2, int x3, int y3,
 void Framebuffer::DrawImage(int x, int y, const Image& image)
 {
 	// check if off-screen
-	if (x >= _width || x < 0  || y >= _height || y < 0 ) return;
+	if (x + image._width < 0 || x >=_width  || y >= _height || y + image._height < 0 ) return;
 
 	// iterate through image y
 	for (int iy = 0; iy < image._height; iy++)
@@ -252,7 +252,7 @@ void Framebuffer::DrawImage(int x, int y, const Image& image)
 		// set screen y 
 		int sy = y + iy;
 		// check if off-screen, don't draw if off-screen
-		if (sy>_height) continue;
+		if (sy < 0 || sy>=_height) continue;
 
 		// iterate through image x
 		for (int ix = 0; ix < image._width; ix++)
@@ -260,7 +260,7 @@ void Framebuffer::DrawImage(int x, int y, const Image& image)
 			// set screen x
 			int sx = x + ix;
 			// check if off-screen, don't draw if off-screen
-			if (sx>_width) continue;
+			if (sx < 0 || sx>=_width) continue;
 
 			// get image pixel color
 			color_t color = image._buffer[ix + (iy * image._width)];

@@ -3,6 +3,8 @@
 #include "Framebuffer.h"
 #include "MathUtils.h"
 #include "Image.h"
+#include "PostProcess.h"
+
 #include <iostream>
 #include <SDL.h>
 
@@ -17,7 +19,8 @@ int main(int argc, char* argv[])
     Framebuffer framebuffer(renderer, 800, 600);
 
     Image image;
-    image.Load("enemy.png");
+    image.Load("AB.jpg");
+
 
     bool quit = false;
 
@@ -42,16 +45,12 @@ int main(int argc, char* argv[])
         // framebuffer
         framebuffer.Clear(color_t{0,0,0,255});
 
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 20; i++)
         {
-            int x = rand() % framebuffer._width/2;
+            //int x = rand() % framebuffer._width/2;
             //int x2 = rand() % framebuffer._width;
-            int y = rand() % framebuffer._height/2;
+            //int y = rand() % framebuffer._height/2;
             //int y2 = rand() % framebuffer._height;
-
-            framebuffer.DrawImage(x, y, image);
-
-
             //framebuffer.DrawPoint(x, y, {255,255,255,255});
         }
 
@@ -74,7 +73,25 @@ int main(int argc, char* argv[])
         //framebuffer.DrawRect(x-20, y-20, 40, 40, { 0,255,0,255 });
 
 
+        framebuffer.DrawImage(0, 0, image);
 
+        //PostProcess::Edge(framebuffer._buffer, framebuffer._width, framebuffer._height, 10);
+
+
+
+        //PostProcess::Invert(framebuffer._buffer);
+
+        //PostProcess::Monochrome(framebuffer._buffer);
+
+        //PostProcess::Brightness(framebuffer._buffer, -50);
+
+        //PostProcess::ColorBalance(framebuffer._buffer, 0, 0, 100);
+
+        //PostProcess::Noise(framebuffer._buffer, 30);
+
+        //PostProcess::Thresholding(framebuffer._buffer, 150);
+
+        //PostProcess::Posterization(framebuffer._buffer, 6);
 
 
         framebuffer.Update();
