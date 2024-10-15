@@ -35,15 +35,22 @@ void Framebuffer::Clear(const color_t& color)
 
 void Framebuffer::DrawPoint(int x, int y, const color_t& color)
 {
-	if (x >= _width || x < 0) return;
-	if (y >= _height || y < 0) return;
-	_buffer[x + y * _width] = color;
+	color_t& dest = _buffer[x + y * _width];
+	dest = ColorBlend(color, dest);
+}
+
+void Framebuffer::DrawPointClip(int x, int y, const color_t& color)
+{
+	if (x >= _width || x < 0 || y >= _height || y < 0) return;
+
+	color_t dest = _buffer[x + y * _width];
+	dest = AlphaBlend(color, dest);
 }
 
 void Framebuffer::DrawRect(int x, int y, int width, int height, const color_t& color)
 {
-	if (x >= _width || x < 0 || x + width >= _width) return;
-	if (y >= _height || y < 0 || y + height >= _height) return;
+	if (x >= _width || x + width < 0 || x + width >= _width) return;
+	if (y >= _height || y + height < 0 || y + height >= _height) return;
 
 	int x1 = std::max(x, 0);
 	int x2 = std::min(x + width, _width);
@@ -244,7 +251,7 @@ void Framebuffer::DrawCubicCurve(int x1, int y1, int x2, int y2, int x3, int y3,
 void Framebuffer::DrawImage(int x, int y, const Image& image)
 {
 	// check if off-screen
-	if (x + image._width < 0 || x >=_width  || y >= _height || y + image._height < 0 ) return;
+	if (x + image._width < 0 || x >=_width  || y + image._height < 0 ||  y >= _height) return;
 
 	// iterate through image y
 	for (int iy = 0; iy < image._height; iy++)
@@ -265,9 +272,11 @@ void Framebuffer::DrawImage(int x, int y, const Image& image)
 			// get image pixel color
 			color_t color = image._buffer[ix + (iy * image._width)];
 			// check alpha, if 0 don't draw
-			if (color.a==0) continue;
+			//if (color.a==0) continue;
 			// set buffer to color
-			_buffer[sx + (sy * _width)] = color;
+			DrawPoint(sx, sy, color);
+
+			//_buffer[sx + (sy * _width)] = color;
 		}
 	}
 }

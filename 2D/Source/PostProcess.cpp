@@ -89,6 +89,14 @@ namespace PostProcess
 			});
 	}
 
+	void Alpha(std::vector<color_t>& buffer, uint8_t alpha)
+	{
+		std::for_each(buffer.begin(), buffer.end(), [alpha](color_t& color)
+			{
+				color.a = alpha;
+			});
+	}
+
 
 	void BoxBlur(std::vector<color_t>& buffer, int width, int height)
 	{
@@ -261,7 +269,50 @@ namespace PostProcess
 	}
 	void Emboss(std::vector<color_t>& buffer, int width, int height, int threshold)
 	{
+		std::vector<color_t> source = buffer;
+		int kernel[3][3] =
+		{
+			{-2,-1,0},
+			{-1,1,1},
+			{0,1,2}
+		};
 
+		int min = (threshold > 128) ? 0 : 128 - threshold;
+		int max = (threshold > 127) ? 255 : 128 + threshold;
+
+		for (int i = 0; i < buffer.size(); i++)
+		{
+			int x = i % width;
+			int y = i / width;
+
+			//skip out of range
+			if (x < 1 || x + 1 >= width) continue;
+			if (y < 1 || y + 1 >= height) continue;
+
+			int r = 0;
+			int g = 0;
+			int b = 0;
+
+			for (int iy = 0; iy < 3; iy++)
+			{
+				for (int ix = 0; ix < 3; ix++)
+				{
+					color_t pixel = source[(x + ix - 1) + ((y + iy - 1) * width)];
+					int weight = kernel[iy][ix];
+					int avg = (pixel.r + pixel.g + pixel.b) / 3;
+					//r += pixel.r * weight;
+					//g += pixel.g * weight;
+					//b += pixel.b * weight;
+					r += avg * weight;
+					g += avg * weight;
+					b += avg * weight;
+				}
+			}
+
+			buffer[i].r = static_cast<uint8_t>(Clamp(r, min, max));
+			buffer[i].g = static_cast<uint8_t>(Clamp(g, min, max));
+			buffer[i].b = static_cast<uint8_t>(Clamp(b, min, max));
+		}
 	}
 }
 

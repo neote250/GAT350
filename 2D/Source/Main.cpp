@@ -17,10 +17,12 @@ int main(int argc, char* argv[])
     renderer.CreateWindow();
 
     Framebuffer framebuffer(renderer, 800, 600);
-
     Image image;
     image.Load("AB.jpg");
 
+    Image imageAlpha;
+    imageAlpha.Load("colors.png");
+    PostProcess::Alpha(imageAlpha._buffer, 64);
 
     bool quit = false;
 
@@ -38,60 +40,32 @@ int main(int argc, char* argv[])
                 quit = true;
             }
         }
-        // clear screen
-        //SDL_SetRenderDrawColor(renderer._renderer, 0, 0, 0, 0);
-        //SDL_RenderClear(renderer._renderer);
 
         // framebuffer
         framebuffer.Clear(color_t{0,0,0,255});
 
-        for (int i = 0; i < 20; i++)
-        {
-            //int x = rand() % framebuffer._width/2;
-            //int x2 = rand() % framebuffer._width;
-            //int y = rand() % framebuffer._height/2;
-            //int y2 = rand() % framebuffer._height;
-            //framebuffer.DrawPoint(x, y, {255,255,255,255});
-        }
 
-        //framebuffer.DrawLine(125, 75, 75, 25, { (uint8_t)(rand() % 255),(uint8_t)(rand() % 255),(uint8_t)(rand() % 255),255 });
-        //framebuffer.DrawRect(50, 10, 100, 100, { 0,255,0,255 });
-        //framebuffer.DrawTriangle(50, 50, 100, 100, 75, 12, { 0,255,0,255 });
-        //framebuffer.DrawCircle(100, 50, 25, { 150,150,12,255 });
-        //int mx, my;
-        //SDL_GetMouseState(&mx,&my);
+        int mx, my;
+        SDL_GetMouseState(&mx,&my);
 
-        //framebuffer.DrawLinearCurve(100, 100, 200, 200, { 255,255,0,255 });
-        //framebuffer.DrawQuadraticCurve(100, 200, mx, my, 300, 200, { 255,255,0,255 });
-        //framebuffer.DrawCubicCurve(300, 500, 300, 100, mx, my, 600, 500, { 255,0,0,255 });
-
-        //int ticks = SDL_GetTicks();
         //float time = ticks * 0.001f;
         //float t = std::abs(std::sin(time));
         //int x, y;
-        //CubicPoint(300, 400, 300, 100, mx, my, 600, 400, t, x, y);
-        //framebuffer.DrawRect(x-20, y-20, 40, 40, { 0,255,0,255 });
 
-
+        SetBlendMode(BlendMode::Normal);
         framebuffer.DrawImage(0, 0, image);
+        //SetBlendMode(BlendMode::Alpha);
+        //framebuffer.DrawImage(mx, my, imageAlpha);
 
+#pragma region post_process
+        //PostProcess::BoxBlur(framebuffer._buffer,framebuffer._width,framebuffer._height);
+        //PostProcess::GaussianBlur(framebuffer._buffer, framebuffer._width, framebuffer._height);
+        //PostProcess::Sharpen(framebuffer._buffer, framebuffer._width, framebuffer._height);
         //PostProcess::Edge(framebuffer._buffer, framebuffer._width, framebuffer._height, 10);
+        //PostProcess::Emboss(framebuffer._buffer, framebuffer._width, framebuffer._height, 50);
+#pragma endregion
 
 
-
-        //PostProcess::Invert(framebuffer._buffer);
-
-        //PostProcess::Monochrome(framebuffer._buffer);
-
-        //PostProcess::Brightness(framebuffer._buffer, -50);
-
-        //PostProcess::ColorBalance(framebuffer._buffer, 0, 0, 100);
-
-        //PostProcess::Noise(framebuffer._buffer, 30);
-
-        //PostProcess::Thresholding(framebuffer._buffer, 150);
-
-        //PostProcess::Posterization(framebuffer._buffer, 6);
 
 
         framebuffer.Update();
