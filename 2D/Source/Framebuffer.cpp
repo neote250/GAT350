@@ -43,8 +43,8 @@ void Framebuffer::DrawPointClip(int x, int y, const color_t& color)
 {
 	if (x >= _width || x < 0 || y >= _height || y < 0) return;
 
-	color_t dest = _buffer[x + y * _width];
-	dest = AlphaBlend(color, dest);
+	color_t& dest = _buffer[x + y * _width];
+	dest = ColorBlend(color, dest);
 }
 
 void Framebuffer::DrawRect(int x, int y, int width, int height, const color_t& color)
@@ -100,7 +100,7 @@ void Framebuffer::DrawLine(int x1, int y1, int x2, int y2, const color_t& color)
 	//draw line points
 	for (int x = x1, y = y1; x <= x2; x++)
 	{
-		(steep) ? DrawPoint(y, x, color) : DrawPoint(x, y, color);
+		(steep) ? DrawPointClip(y, x, color) : DrawPointClip(x, y, color);
 		error -= dy;
 
 		//update error term
