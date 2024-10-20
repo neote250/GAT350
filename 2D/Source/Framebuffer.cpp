@@ -175,14 +175,14 @@ void Framebuffer::DrawCircle(int xc, int yc, int radius, const color_t& color)
 
 void Framebuffer::DrawCurve(int xc, int yc, int x, int y, const color_t& color)
 {
-	DrawPoint(xc + x, yc + y, color);
-	DrawPoint(xc - x, yc + y, color);
-	DrawPoint(xc + x, yc - y, color);
-	DrawPoint(xc - x, yc - y, color);
-	DrawPoint(xc + y, yc + x, color);
-	DrawPoint(xc - y, yc + x, color);
-	DrawPoint(xc + y, yc - x, color);
-	DrawPoint(xc - y, yc - x, color);
+	DrawPointClip(xc + x, yc + y, color);
+	DrawPointClip(xc - x, yc + y, color);
+	DrawPointClip(xc + x, yc - y, color);
+	DrawPointClip(xc - x, yc - y, color);
+	DrawPointClip(xc + y, yc + x, color);
+	DrawPointClip(xc - y, yc + x, color);
+	DrawPointClip(xc + y, yc - x, color);
+	DrawPointClip(xc - y, yc - x, color);
 }
 
 void Framebuffer::DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, const color_t& color)
@@ -274,7 +274,7 @@ void Framebuffer::DrawImage(int x, int y, const Image& image)
 			// check alpha, if 0 don't draw
 			//if (color.a==0) continue;
 			// set buffer to color
-			DrawPoint(sx, sy, color);
+			DrawPointClip(sx, sy, color);
 
 			//_buffer[sx + (sy * _width)] = color;
 		}

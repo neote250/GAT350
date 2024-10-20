@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\ETime.cpp" />
     <ClCompile Include="Source\Framebuffer.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="Source\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\ETime.h" />
     <ClInclude Include="Source\Framebuffer.h" />
