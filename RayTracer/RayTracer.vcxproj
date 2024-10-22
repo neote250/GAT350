@@ -164,6 +164,7 @@
     <ClInclude Include="Source\Model.h" />
     <ClInclude Include="Source\PostProcess.h" />
     <ClInclude Include="Source\Random.h" />
+    <ClInclude Include="Source\Ray.h" />
     <ClInclude Include="Source\Renderer.h" />
     <ClInclude Include="Source\Transform.h" />
   </ItemGroup>
