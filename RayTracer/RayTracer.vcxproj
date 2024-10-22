@@ -21,10 +21,10 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{131a61e8-2035-4f13-a294-888d8e77135e}</ProjectGuid>
+    <ProjectGuid>{2F1F31F1-2B34-4B45-852F-2A0223ADE196}</ProjectGuid>
     <RootNamespace>My2D</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>SoftwareRenderer</ProjectName>
+    <ProjectName>RayTracer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
