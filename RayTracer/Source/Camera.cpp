@@ -1,44 +1,39 @@
 #include "Camera.h"
-
+#include "MathUtils.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 void Camera::SetView(const glm::vec3& eye, const glm::vec3& target, const glm::vec3& up) //target or center
 {
-	_view = glm::lookAt(eye, target, up);
+	m_eye = eye;
+	//create camera axis
+	m_forward = glm::normalize(target - eye);
+	m_right = glm::normalize(Cross(up, m_forward));
+	m_up = Cross(m_forward, m_right);
+
+	CalculateViewPlane();
 }
 
-void Camera::SetProjection(float fieldOfView, float aspectRatio, float nearClipping, float farClipping)
+ray_t Camera::GetRay(const glm::vec2& point) const
 {
-	_projection = glm::perspective(glm::radians(fieldOfView), aspectRatio, nearClipping, farClipping);
+	ray_t ray;
+
+	ray.origin = m_eye;
+	//subtract head from tail. Where we are going, to where we are.
+	ray.direction = (m_lowerLeft + (m_horizontal * point.x) + (m_vertical * point.y)) - m_eye; 
+
+	return ray;
 }
 
-glm::vec3 Camera::ModelToView(const glm::vec3& position) const
+void Camera::CalculateViewPlane()
 {
-	//convert point from world space to view space
-	return _view * glm::vec4{ position, 1 };
-}
+	float theta = glm::radians(m_fov);
 
-glm::vec4 Camera::ViewToProjection(const glm::vec3& position) const
-{
-	//convert point from view space to projection space
-	return _projection * glm::vec4{ position, 1 };
-}
+	float halfHeight = glm::tan(theta * 0.5f);
+	float height = halfHeight * 2;
+	float width = height * m_aspectRatio;
 
-glm::ivec2 Camera::ViewToScreen(const glm::vec3& position) const
-{
-	glm::vec4 clip = ViewToProjection(position);
+	m_horizontal = m_right * width;
+	m_vertical = m_up * height;
 
-	//prevent / 0
-	if (clip.w == 0) return glm::ivec2{ -1,-1 };
-
-	//convert projection space to ndc (-1 <-> 1)
-	glm::vec3 ndc = clip / clip.w;
-
-	//don't draw if outside near and far
-	if (ndc.z < -1 || ndc.z > 1) return glm::ivec2{ -1, -1 };
-
-	float x = (ndc.x + 1) * (_width * 0.5f);
-	float y = (1 - ndc.y) * (_height * 0.5f);
-
-	return glm::ivec2(x, y);
+	m_lowerLeft = m_eye - (m_horizontal * 0.5f) - (m_vertical * 0.5f) + m_forward;
 }

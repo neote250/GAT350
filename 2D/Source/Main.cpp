@@ -50,13 +50,13 @@ int main(int argc, char* argv[])
     
     //models
     std::shared_ptr <Model> model = std::make_shared<Model>();
-    model->Load("sphere.obj");
+    model->Load("teapot.obj");
     model->SetColor({ 0,255,0,255 });
 
     std::vector<std::unique_ptr<Actor>> actors;
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 5; i++)
     {
-        Transform transform{ {randomf(-10.0f,10.0f), randomf(-10.0f,10.0f), randomf(-10.0f,10.0f)}, glm::vec3{0, 0, 0}, glm::vec3{2} };
+        Transform transform{ {randomf(-15.0f,15.0f), randomf(-15.0f,15.0f), randomf(-15.0f,15.0f)}, glm::vec3{randomf(-90.0f,90.0f), randomf(-90.0f,90.0f), randomf(-90.0f,90.0f)}, glm::vec3{2} };
         std::unique_ptr<Actor>actor = std::make_unique<Actor>(transform, model);
         actor->SetColor({ (uint8_t)random(256),(uint8_t)random(256), (uint8_t)random(256), 255 });
         actors.push_back(std::move(actor));
@@ -110,6 +110,8 @@ int main(int argc, char* argv[])
             input.SetRelativeMode(false);
         }
         camera.SetView(cameraTransform.position, cameraTransform.position + glm::vec3{0,0,1});
+
+        framebuffer.DrawImage(0, 0, image);
 
         //draw
         for (auto& actor : actors)

@@ -1,15 +1,27 @@
 #pragma once
+#include <glm/glm.hpp>
 
 template<typename T>
 inline T Lerp(const T& a, const T& b, float t) //inline for functions that multiple classes will be using so it isn't defined multiple times
 {
-	return static_cast<T>(a + ((b - a)*t));
+	return static_cast<T>(a + (b - a) * t);
 }
 
 template <typename T>
 inline T Clamp(const T& value, const T& min, const T& max)
 {
 	return (value < min) ? min : (value > max) ? max : value;
+}
+
+inline glm::vec3 Cross(const glm::vec3& v1, const glm::vec3& v2)
+{
+	glm::vec3 result;
+
+	result.x = (v1.y * v2.z)-(v2.y*v1.z);
+	result.y = (v1.z * v2.x)-(v2.z*v1.x);
+	result.z = (v1.x * v2.y)-(v2.x*v1.y);
+
+	return result;
 }
 
 inline void QuadraticPoint(int x1, int y1, int x2, int y2, int x3, int y3, float t, int& x, int& y)

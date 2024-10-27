@@ -8,35 +8,7 @@
 
 void Model::Draw(Framebuffer& framebuffer, const glm::mat4& model, const Camera& camera)
 {
-	for (int i = 0; i < _vertices.size(); i += 3)
-	{
-		//convert point from model space to world space
-		vertex_t p1 = model * glm::vec4{ _vertices[i], 1 };
-		vertex_t p2 = model * glm::vec4{ _vertices[i+1], 1 };
-		vertex_t p3 = model * glm::vec4{ _vertices[i+2], 1 };
-
-		//convert point from world space to view space
-		p1 = camera.ModelToView(p1);
-		p2 = camera.ModelToView(p2);
-		p3 = camera.ModelToView(p3);
-
-		//convert point from view space to projection space
-		//p1 = camera.ViewToProjection(p1);
-		//p2 = camera.ViewToProjection(p2);
-		//p3 = camera.ViewToProjection(p3);
-
-		//convert point from view space to projection space
-		glm::ivec2 s1 = camera.ViewToScreen(p1);
-		glm::ivec2 s2 = camera.ViewToScreen(p2);
-		glm::ivec2 s3 = camera.ViewToScreen(p3);
-
-		if (s1.x == -1 || s1.y == -1 || s2.x == -1 || s2.y == -1 || s3.x == -1 || s3.y == -1) continue;
-
-		//draw
-		framebuffer.DrawTriangle(
-			s1.x, s1.y, s2.x, s2.y, s3.x, s3.y, _color
-		);
-	}
+	//
 }
 
 bool Model::Load(const std::string& filename)
