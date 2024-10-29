@@ -31,6 +31,11 @@ inline bool approximately(float value1, float value2)
 	return (std::fabs(value1 - value2) < FLT_EPSILON);
 }
 
+//inline glm::vec3 Reflect(const glm::vec3& i, const glm::vec3& n)
+//{
+//	return i - 2.0f * dot(glm::normalize(n), i) * glm::normalize(n);
+//}
+
 
 inline glm::vec3 Cross(const glm::vec3& v1, const glm::vec3& v2)
 {
