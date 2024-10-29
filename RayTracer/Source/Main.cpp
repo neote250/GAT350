@@ -13,6 +13,7 @@
 #include "Random.h"
 #include "Tracer.h"
 #include "Scene.h"
+#include "Plane.h"
 
 #include <memory>
 #include <iostream>
@@ -23,6 +24,7 @@
 
 int main(int argc, char* argv[])
 {
+    srand((unsigned int)time(NULL));
     //initialize
     Time time;
 
@@ -38,10 +40,25 @@ int main(int argc, char* argv[])
     camera.SetView({ 0, 0, -20 }, { 0, 0, 0 });
 
     Scene scene;
+    std::array<std::shared_ptr<Material>, 3> materials;
+    std::shared_ptr<Material> gray = std::make_shared<Lambertian>(color3_t{ 0.5f });
+    std::shared_ptr<Material> red = std::make_shared<Lambertian>(color3_t{ 1, 0, 0 });
+    std::shared_ptr<Material> blue = std::make_shared<Lambertian>(color3_t{ 0, 0, 1 });
+    materials[0] = gray;
+    materials[1] = red;
+    materials[2] = blue;
 
-    std::shared_ptr<Material> material = std::make_shared<Material>(color3_t{ 1,0,0 });
-    auto object = std::make_unique<Sphere>(glm::vec3{ 0, 0, -40 }, 2.0f, material);
-    scene.AddObject(std::move(object));
+
+
+    for (int i = 0; i < 10; i++)
+    {
+        auto object = std::make_unique<Sphere>(random(glm::vec3{0}, glm::vec3{20,20,20}), 2.0f, materials[random(3)]);
+        scene.AddObject(std::move(object));
+    }
+
+    auto plane = std::make_unique<Plane>(glm::vec3{ 0, -5, 0 }, glm::vec3{ 0, 1, 0 }, gray);
+    scene.AddObject(std::move(plane));
+
 
     bool quit = false;
     while (!quit)
