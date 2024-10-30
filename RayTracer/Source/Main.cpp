@@ -14,7 +14,6 @@
 #include "Tracer.h"
 #include "Scene.h"
 #include "Plane.h"
-#include "Emissive.h"
 
 #include <memory>
 #include <iostream>
@@ -43,8 +42,8 @@ int main(int argc, char* argv[])
     Scene scene;
     std::array<std::shared_ptr<Material>, 4> materials;
     std::shared_ptr<Material> gray = std::make_shared<Lambertian>(color3_t{ 0.5f });
-    std::shared_ptr<Material> red = std::make_shared<Metal>(color3_t{ 1, 0, 0 }, 0.3f);
-    std::shared_ptr<Material> blue = std::make_shared<Metal>(color3_t{ 0, 0, 1 }, 0.1f);
+    std::shared_ptr<Material> red = std::make_shared<Metal>(color3_t{ 1, 0, 0 }, 0.0f);
+    std::shared_ptr<Material> blue = std::make_shared<Dielectric>(color3_t{ 0, 0, 1 }, 1.33f);
     std::shared_ptr<Material> purple = std::make_shared<Emissive>(color3_t{ 1, 0, 1 }, 1.0f);
     materials[0] = gray;
     materials[1] = red;
@@ -66,8 +65,9 @@ int main(int argc, char* argv[])
     bool quit = false;
 
     // Render
-    framebuffer.Clear(ColorConvert(color4_t{ 0,255,0,255 }));
+    //framebuffer.Clear(ColorConvert(color4_t{ 0,255,0,255 }));
     scene.Render(framebuffer, camera, 50, 50);
+    framebuffer.Update();
 
     while (!quit)
     {
@@ -82,7 +82,6 @@ int main(int argc, char* argv[])
 
 
 
-        framebuffer.Update();
 
         // show screen
         renderer.CopyFramebuffer(framebuffer);
