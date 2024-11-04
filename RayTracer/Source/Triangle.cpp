@@ -8,7 +8,7 @@ bool Triangle::Hit(const ray_t& ray, raycastHit_t& raycastHit, float minDistance
 
     // calculate perpendicular vector, determine how aligned the ray is with the triangle plane
     glm::vec3 pvec = glm::cross(ray.direction, edge2);
-    float determinant = glm::dot(edge1, pvec);
+    float determinant = glm::dot(pvec, edge1);
 
     // if determinant is less than 0 then ray is hitting back of triangle
     // if determinant is 0 then ray is parallel to triangle surface
@@ -33,7 +33,7 @@ bool Triangle::Hit(const ray_t& ray, raycastHit_t& raycastHit, float minDistance
     // Calculate qvec, a vector perpendicular to both tvec and edge1, used to find the v parameter
     glm::vec3 qvec = glm::cross(tvec, edge1);
     // Calculate v parameter for barycentric coordinates
-    float v = Dot(ray.direction, qvec) * invDet;
+    float v = Dot(qvec, ray.direction) * invDet;
     // Check if v is outside the bounds or if u + v exceeds 1, no intersection
     if (v < 0 || u + v > 1)
     {

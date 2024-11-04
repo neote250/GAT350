@@ -38,13 +38,13 @@ int main(int argc, char* argv[])
     Framebuffer framebuffer(renderer, renderer._width, renderer._height);
 
     Camera camera{ 70.0f, framebuffer._width / (float)framebuffer._height };
-    camera.SetView({ 0, 0, -20 }, { 0, 0, 0 });
+    camera.SetView({ 5, 10, -5 }, { 0, 0, 0 });
 
     Scene scene;
     std::array<std::shared_ptr<Material>, 4> materials;
     std::shared_ptr<Material> gray = std::make_shared<Lambertian>(color3_t{ 0.5f });
     std::shared_ptr<Material> red = std::make_shared<Metal>(color3_t{ 1, 0, 0 }, 0.0f);
-    std::shared_ptr<Material> blue = std::make_shared<Dielectric>(color3_t{ 1, 1, 1 }, 1.33f);
+    std::shared_ptr<Material> blue = std::make_shared<Dielectric>(color3_t{ 0, 0, 1 }, 1.33f);
     std::shared_ptr<Material> purple = std::make_shared<Emissive>(color3_t{ 1, 0, 1 }, 10.0f);
     materials[0] = gray;
     materials[1] = red;
@@ -65,14 +65,20 @@ int main(int argc, char* argv[])
     //auto sphere = std::make_unique<Sphere>(glm::vec3{ 0, 0, 0 }, 2.0f, blue);
     //scene.AddObject(std::move(sphere));
 
-    auto triangle = std::make_unique<Triangle>(glm::vec3{ 0, 0, 0 }, glm::vec3{ -10, 5, 0 }, glm::vec3{ 5, 5, 0 }, red);
-    scene.AddObject(std::move(triangle));
+    //auto triangle = std::make_unique<Triangle>(glm::vec3{ 0, 0, 0 }, glm::vec3{ -10, 5, 0 }, glm::vec3{ 5, 5, 0 }, red);
+    //scene.AddObject(std::move(triangle));
+
+    std::unique_ptr<Model> model = std::make_unique<Model>(red);
+    model->Load("cube-2.obj");
+    scene.AddObject(std::move(model));
+
+
 
     bool quit = false;
 
     // Render
     //framebuffer.Clear(ColorConvert(color4_t{ 0,255,0,255 }));
-    scene.Render(framebuffer, camera, 40, 5);
+    scene.Render(framebuffer, camera, 10, 2);
     framebuffer.Update();
 
     while (!quit)
