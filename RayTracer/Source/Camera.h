@@ -14,6 +14,7 @@ public:
 		, m_aspectRatio { aspectRatio}
 	{}
 
+	void SetFOV(float fov) { m_fov = fov; }
 	void SetView(const glm::vec3& eye, const glm::vec3& target, const glm::vec3& up = glm::vec3{ 0,1,0 });
 	ray_t GetRay(const glm::vec2& point) const;
 

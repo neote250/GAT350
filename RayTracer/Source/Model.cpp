@@ -2,10 +2,35 @@
 #include "Framebuffer.h"
 #include "Camera.h"
 #include "Triangle.h"
+#include "Sphere.h"
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
+void Model::Update()
+{
+	for (size_t i = 0; i < m_local_vertices.size(); i++)
+	{
+		m_vertices[i] = m_transform * glm::vec4{ m_local_vertices[i], 1 };
+	}
+
+	// get center point of transformed vertices
+	m_center = glm::vec3{ 0 };
+	for (auto& vertex : m_vertices)
+	{
+		m_center += vertex;
+	}
+	m_center /= (float)m_vertices.size();
+
+	// get radius of transformed vertices
+	m_radius = 0;
+	for (auto& vertex : m_vertices)
+	{
+		float radius = glm::length(vertex - m_center);
+		m_radius = glm::max(radius, m_radius);
+	}
+}
 
 bool Model::Load(const std::string& filename)
 {
@@ -69,11 +94,13 @@ bool Model::Load(const std::string& filename)
 					// index is 1 based, need to subtract one for array
 					glm::vec3 position = vertices[index[0] - 1];
 
-					m_vertices.push_back(position);
+					m_local_vertices.push_back(position);
 				}
 			}
 		}
 	}
+
+	m_vertices.resize(m_local_vertices.size());
 
 	stream.close();
 	return true;
@@ -81,12 +108,32 @@ bool Model::Load(const std::string& filename)
 
 bool Model::Hit(const ray_t& ray, raycastHit_t& raycastHit, float minDistance, float maxDistance)
 {
+	//check for bounding sphere raycast
+	float t;
+	if (!Sphere::Raycast(ray, m_center, m_radius, minDistance, maxDistance, t))
+	{
+		return false;
+	}
+
+
 	// check cast ray with mesh triangles 
 	for (size_t i = 0; i < m_vertices.size(); i+=3)
 	{
-		Triangle triangle(m_vertices[i], m_vertices[i+1], m_vertices[i+2], m_material);
-		if (triangle.Hit(ray, raycastHit, minDistance, maxDistance))
+		
+		if (Triangle::Raycast(ray, m_vertices[i], m_vertices[i + 1], m_vertices[i + 2], minDistance, maxDistance, t))
 		{
+			// set raycast hit
+			raycastHit.distance = t;
+			raycastHit.point = ray.at(t);
+
+			// set edges of the triangle
+			glm::vec3 edge1 = m_vertices[i + 1] - m_vertices[i];
+			glm::vec3 edge2 = m_vertices[i + 2] - m_vertices[i];
+
+			//calculate triangle normal (edge 1 x edge 2) [x = cross product]
+			raycastHit.normal = glm::normalize(glm::cross(edge1, edge2));
+			raycastHit.material = GetMaterial();
+
 			return true;
 		}
 	}
