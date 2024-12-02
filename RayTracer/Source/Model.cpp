@@ -43,7 +43,7 @@ bool Model::Load(const std::string& filename)
 		return false;
 	}
 
-	vertices_t vertices;
+	vertexbuffer_t vertices;
 	std::string line;
 	while (std::getline(stream, line))
 	{

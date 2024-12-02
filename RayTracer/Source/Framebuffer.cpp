@@ -6,66 +6,66 @@
 
 Framebuffer::Framebuffer(const Renderer& renderer, int width, int height)
 {
-	_width = width;
-	_height = height;
-	_pitch = width * sizeof(color_t);
+	m_width = width;
+	m_height = height;
+	m_pitch = width * sizeof(color_t);
 
-	_texture = SDL_CreateTexture(renderer._renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, width, height);
-	if (!_texture)
+	m_texture = SDL_CreateTexture(renderer._renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, width, height);
+	if (!m_texture)
 	{
 		std::cerr << "Error initializing SDL: " << SDL_GetError() << std::endl;
 	}
-	_buffer.resize(_width * _height);
+	m_buffer.resize(m_width * m_height);
 }
 
 Framebuffer::~Framebuffer()
 {
-	SDL_DestroyTexture(_texture);
+	SDL_DestroyTexture(m_texture);
 }
 
 void Framebuffer::Update()
 {
-	SDL_UpdateTexture(_texture, NULL, _buffer.data(), _pitch);
+	SDL_UpdateTexture(m_texture, NULL, m_buffer.data(), m_pitch);
 }
 
 void Framebuffer::Clear(const color_t& color)
 {
-	std::fill(_buffer.begin(), _buffer.end(), color);
+	std::fill(m_buffer.begin(), m_buffer.end(), color);
 }
 
 void Framebuffer::DrawPoint(int x, int y, const color_t& color)
 {
-	color_t& dest = _buffer[x + y * _width];
+	color_t& dest = m_buffer[x + y * m_width];
 	dest = ColorBlend(color, dest);
 }
 
 void Framebuffer::DrawPointClip(int x, int y, const color_t& color)
 {
-	if (x >= _width || x < 0 || y >= _height || y < 0) return;
+	if (x >= m_width || x < 0 || y >= m_height || y < 0) return;
 
-	color_t& dest = _buffer[x + y * _width];
+	color_t& dest = m_buffer[x + y * m_width];
 	dest = ColorBlend(color, dest);
 }
 
 void Framebuffer::DrawRect(int x, int y, int width, int height, const color_t& color)
 {
-	if (x >= _width || x + width < 0 || x + width >= _width) return;
-	if (y >= _height || y + height < 0 || y + height >= _height) return;
+	if (x >= m_width || x + width < 0 || x + width >= m_width) return;
+	if (y >= m_height || y + height < 0 || y + height >= m_height) return;
 
 	int x1 = std::max(x, 0);
-	int x2 = std::min(x + width, _width);
+	int x2 = std::min(x + width, m_width);
 	int y1 = std::max(y, 0);
-	int y2 = std::min(y + height, _height);
+	int y2 = std::min(y + height, m_height);
 
 	for (int sy = y1; sy < y2; sy++) 
 	{
-		int index = x1 + sy * _width;
+		int index = x1 + sy * m_width;
 			//_buffer[(x + i) + (y + j)*_width] = color;
 			//_buffer[(x + i) + (y) * _width] = color;
 			//_buffer[(x + i) + (y + height) * _width] = color;
 			//_buffer[(x) + (y + j) * _width] = color;
 			//_buffer[(x + width) + (y + j) * _width] = color;
-		std::fill(_buffer.begin() + index, _buffer.begin() + (index + x2 - x1), color);
+		std::fill(m_buffer.begin() + index, m_buffer.begin() + (index + x2 - x1), color);
 	}
 }
 
@@ -123,7 +123,7 @@ void Framebuffer::DrawLineSlope(int x1, int y1, int x2, int y2, const color_t& c
 		if (y1 > y2) std::swap(y1, y2);
 		for (int y = y1; y < y2; y++)
 		{
-			_buffer[x1 + y * _width] = color;
+			m_buffer[x1 + y * m_width] = color;
 		}
 	}
 	else
@@ -133,7 +133,7 @@ void Framebuffer::DrawLineSlope(int x1, int y1, int x2, int y2, const color_t& c
 			for (int x = x1; x <= x2; x++)
 			{
 				int y = (int)round((m * x) + b);
-				_buffer[x + y * _width] = color;
+				m_buffer[x + y * m_width] = color;
 			}
 		}
 		else
@@ -142,7 +142,7 @@ void Framebuffer::DrawLineSlope(int x1, int y1, int x2, int y2, const color_t& c
 			{
 				//solve for x = y-b/m
 				int x = (int)round((y - b) / m);
-				_buffer[x + y * _width] = color;
+				m_buffer[x + y * m_width] = color;
 			}
 		}
 	}
@@ -251,7 +251,7 @@ void Framebuffer::DrawCubicCurve(int x1, int y1, int x2, int y2, int x3, int y3,
 void Framebuffer::DrawImage(int x, int y, const Image& image)
 {
 	// check if off-screen
-	if (x + image._width < 0 || x >=_width  || y + image._height < 0 ||  y >= _height) return;
+	if (x + image._width < 0 || x >=m_width  || y + image._height < 0 ||  y >= m_height) return;
 
 	// iterate through image y
 	for (int iy = 0; iy < image._height; iy++)
@@ -259,7 +259,7 @@ void Framebuffer::DrawImage(int x, int y, const Image& image)
 		// set screen y 
 		int sy = y + iy;
 		// check if off-screen, don't draw if off-screen
-		if (sy < 0 || sy>=_height) continue;
+		if (sy < 0 || sy>=m_height) continue;
 
 		// iterate through image x
 		for (int ix = 0; ix < image._width; ix++)
@@ -267,7 +267,7 @@ void Framebuffer::DrawImage(int x, int y, const Image& image)
 			// set screen x
 			int sx = x + ix;
 			// check if off-screen, don't draw if off-screen
-			if (sx < 0 || sx>=_width) continue;
+			if (sx < 0 || sx>=m_width) continue;
 
 			// get image pixel color
 			color_t color = image._buffer[ix + (iy * image._width)];

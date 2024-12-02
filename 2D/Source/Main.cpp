@@ -11,6 +11,7 @@
 #include "Camera.h"
 #include "Actor.h"
 #include "Random.h"
+#include "Shader.h"
 
 #include <memory>
 #include <iostream>
@@ -42,28 +43,35 @@ int main(int argc, char* argv[])
 
     Framebuffer framebuffer(renderer, 800, 600);
     Image image;
-    image.Load("AB.jpg");
+    //image.Load("AB.jpg");
 
     Image imageAlpha;
     imageAlpha.Load("colors.png");
     PostProcess::Alpha(imageAlpha._buffer, 64);
     
+    //shader
+    VertexShader::uniforms.view = camera.GetView();
+    VertexShader::uniforms.projection = camera.GetProjection();
+    VertexShader::uniforms.ambient = color3_t{ 0.01f };
+    VertexShader::uniforms.light.position = glm::vec3{ 10, 10, -10 };
+    VertexShader::uniforms.light.direction = glm::vec3{ 0, -1, 0 }; // light pointing down
+    VertexShader::uniforms.light.color = color3_t{ 0.5f,0,0 }; // red light
+
+    Shader::framebuffer = &framebuffer;
+
     //models
     std::shared_ptr <Model> model = std::make_shared<Model>();
-    model->Load("teapot.obj");
-    model->SetColor({ 0,255,0,255 });
+    model->Load("models/sphere.obj");
+    model->SetColor({ 0,0,1,1 });
 
+    //actors
     std::vector<std::unique_ptr<Actor>> actors;
-    for (int i = 0; i < 5; i++)
-    {
-        Transform transform{ {randomf(-15.0f,15.0f), randomf(-15.0f,15.0f), randomf(-15.0f,15.0f)}, glm::vec3{randomf(-90.0f,90.0f), randomf(-90.0f,90.0f), randomf(-90.0f,90.0f)}, glm::vec3{2} };
-        std::unique_ptr<Actor>actor = std::make_unique<Actor>(transform, model);
-        actor->SetColor({ (uint8_t)random(256),(uint8_t)random(256), (uint8_t)random(256), 255 });
-        actors.push_back(std::move(actor));
-    }
+
+    Transform transform{ glm::vec3{0}, glm::vec3{0}, glm::vec3{5} };
+    std::unique_ptr<Actor>actor = std::make_unique<Actor>(transform, model);
+    actors.push_back(std::move(actor));
 
     bool quit = false;
-
     while (!quit)
     {
         time.Tick();
@@ -110,13 +118,16 @@ int main(int argc, char* argv[])
             input.SetRelativeMode(false);
         }
         camera.SetView(cameraTransform.position, cameraTransform.position + glm::vec3{0,0,1});
+        VertexShader::uniforms.view = camera.GetView();
+
 
         framebuffer.DrawImage(0, 0, image);
 
         //draw
         for (auto& actor : actors)
         {
-            actor->Draw(framebuffer, camera);
+            actor->GetTransform().rotation.y += time.GetDeltaTime() * 90;
+            actor->Draw();
         }
 
         //update framebuffer

@@ -1,4 +1,5 @@
 #pragma once
+#include <glm/glm.hpp>
 
 template<typename T>
 inline T Lerp(const T& a, const T& b, float t) //inline for functions that multiple classes will be using so it isn't defined multiple times
@@ -34,4 +35,8 @@ inline void CubicPoint(int x1, int y1, int x2, int y2, int x3, int y3, int x4, i
 
 	x = (int)(a * x1 + b * x2 + c * x3 + d * x4);
 	y = (int)(a * y1 + b * y2 + c * y3 + d * y4);
+}
+inline float cross(const glm::vec2& a, const glm::vec2& b)
+{
+	return glm::cross(glm::vec3(a.x, a.y, 0), glm::vec3(b.x, b.y, 0)).z;
 }

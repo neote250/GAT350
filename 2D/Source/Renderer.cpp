@@ -41,5 +41,5 @@ bool Renderer::CreateWindow(int sizeX, int sizeY, std::string name)
 
 void Renderer::CopyFramebuffer(const Framebuffer& framebuffer)
 {
-    SDL_RenderCopy(_renderer, framebuffer._texture, NULL, NULL);
+    SDL_RenderCopy(_renderer, framebuffer.m_texture, NULL, NULL);
 }

@@ -30,10 +30,10 @@ public:
 	void DrawImage(int x, int y, int w, int h, const class Image& image);
 
 public:
-	int _width{ 0 };
-	int _height{ 0 };
-	int _pitch{ 0 };
+	int m_width{ 0 };
+	int m_height{ 0 };
+	int m_pitch{ 0 };
 
-	SDL_Texture* _texture{ nullptr };
-	std::vector<color_t> _buffer;
+	SDL_Texture* m_texture{ nullptr };
+	std::vector<color_t> m_buffer;
 };

@@ -8,8 +8,8 @@ class Camera
 {
 public:
 	Camera(int width, int height) : 
-		_width { width }
-		, _height { height}
+		m_width { width }
+		, m_height { height}
 	{}
 
 	void SetView(const glm::vec3& eye, const glm::vec3& target, const glm::vec3& up = glm::vec3{ 0,1,0 });
@@ -19,13 +19,13 @@ public:
 	glm::vec4 ViewToProjection(const glm::vec3& position) const;
 	glm::ivec2 ViewToScreen(const glm::vec3& position) const;
 
-	const glm::mat4& GetView() { return _view; }
-	const glm::mat4& GetProjection() { return _projection; }
+	const glm::mat4& GetView() { return m_view; }
+	const glm::mat4& GetProjection() { return m_projection; }
 
 private:
-	glm::mat4 _view{ 1 };
-	glm::mat4 _projection{ 1 };
+	glm::mat4 m_view{ 1 };
+	glm::mat4 m_projection{ 1 };
 
-	int _width{ 0 };
-	int _height{ 0 };
+	int m_width{ 0 };
+	int m_height{ 0 };
 };

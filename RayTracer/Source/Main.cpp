@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 
     Framebuffer framebuffer(renderer, renderer._width, renderer._height);
 
-    Camera camera{ 70.0f, framebuffer._width / (float)framebuffer._height };
+    Camera camera{ 70.0f, framebuffer.m_width / (float)framebuffer.m_height };
     camera.SetView({ 0,5, -20 }, { 0, 0, 0 });
 
     Scene scene;
