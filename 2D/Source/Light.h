@@ -2,6 +2,7 @@
 #include "Color.h"
 #include <glm/glm.hpp>
 
+//enum of light type
 
 struct light_t
 {

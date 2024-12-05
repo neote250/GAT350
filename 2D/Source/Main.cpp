@@ -49,27 +49,47 @@ int main(int argc, char* argv[])
     imageAlpha.Load("colors.png");
     PostProcess::Alpha(imageAlpha._buffer, 64);
     
+    // materials
+    std::shared_ptr<material_t> blueMat = std::make_shared<material_t>();
+    blueMat->albedo = color3_t{ 0, 0, 1 };
+    blueMat->specular = color3_t{ 1 };
+    blueMat->shininess = 256.0f;
+
+    std::shared_ptr<material_t> redMat = std::make_shared<material_t>();
+    redMat->albedo = color3_t{ 1, 0, 0 };
+    redMat->specular = color3_t{ 100 };
+    redMat->shininess = 128.0f;
+
     //shader
-    VertexShader::uniforms.view = camera.GetView();
-    VertexShader::uniforms.projection = camera.GetProjection();
-    VertexShader::uniforms.ambient = color3_t{ 0.01f };
-    VertexShader::uniforms.light.position = glm::vec3{ 10, 10, -10 };
-    VertexShader::uniforms.light.direction = glm::vec3{ 0, -1, 0 }; // light pointing down
-    VertexShader::uniforms.light.color = color3_t{ 0.5f,0,0 }; // red light
+    Shader::uniforms.view = camera.GetView();
+    Shader::uniforms.projection = camera.GetProjection();
+    Shader::uniforms.ambient = color3_t{ 0.01f };
+    Shader::uniforms.light.position = glm::vec3{ 0, 0, -10 };
+    Shader::uniforms.light.direction = glm::vec3{ 0, -1, 0 }; // light pointing down
+    Shader::uniforms.light.color = color3_t{ 1 }; // white light
 
     Shader::framebuffer = &framebuffer;
 
     //models
-    std::shared_ptr <Model> model = std::make_shared<Model>();
-    model->Load("models/sphere.obj");
-    model->SetColor({ 0,0,1,1 });
+    std::shared_ptr <Model> ogreModel = std::make_shared<Model>();
+    ogreModel->Load("models/ogre.obj");
+    //ogreModel->SetColor({ 0,0,1,1 });
+
+    std::shared_ptr <Model> dragonModel = std::make_shared<Model>();
+    dragonModel->Load("models/cube.obj");
+    //dragonModel->SetColor({ 1,0,0,1 });
+
 
     //actors
     std::vector<std::unique_ptr<Actor>> actors;
 
-    Transform transform{ glm::vec3{0}, glm::vec3{0}, glm::vec3{5} };
-    std::unique_ptr<Actor>actor = std::make_unique<Actor>(transform, model);
-    actors.push_back(std::move(actor));
+    Transform ogreTransform{ glm::vec3{-10,5,0}, glm::vec3{0,180,0}, glm::vec3{10} };
+    std::unique_ptr<Actor>ogreActor = std::make_unique<Actor>(ogreTransform, ogreModel, blueMat);
+    actors.push_back(std::move(ogreActor));
+
+    Transform dragonTransform{ glm::vec3{10,0,0}, glm::vec3{0}, glm::vec3{10} };
+    std::unique_ptr<Actor>dragonActor = std::make_unique<Actor>(dragonTransform, dragonModel, redMat);
+    actors.push_back(std::move(dragonActor));
 
     bool quit = false;
     while (!quit)
@@ -118,7 +138,7 @@ int main(int argc, char* argv[])
             input.SetRelativeMode(false);
         }
         camera.SetView(cameraTransform.position, cameraTransform.position + glm::vec3{0,0,1});
-        VertexShader::uniforms.view = camera.GetView();
+        Shader::uniforms.view = camera.GetView();
 
 
         framebuffer.DrawImage(0, 0, image);
