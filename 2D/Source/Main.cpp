@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
     std::shared_ptr<material_t> redMat = std::make_shared<material_t>();
     redMat->albedo = color3_t{ 1, 0, 0 };
     redMat->specular = color3_t{ 100 };
-    redMat->shininess = 128.0f;
+    redMat->shininess = 256.0f;
 
     //shader
     Shader::uniforms.view = camera.GetView();
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
 
     //models
     std::shared_ptr <Model> ogreModel = std::make_shared<Model>();
-    ogreModel->Load("models/ogre.obj");
+    ogreModel->Load("models/cube.obj");
     //ogreModel->SetColor({ 0,0,1,1 });
 
     std::shared_ptr <Model> dragonModel = std::make_shared<Model>();
@@ -83,11 +83,11 @@ int main(int argc, char* argv[])
     //actors
     std::vector<std::unique_ptr<Actor>> actors;
 
-    Transform ogreTransform{ glm::vec3{-10,5,0}, glm::vec3{0,180,0}, glm::vec3{10} };
+    Transform ogreTransform{ glm::vec3{-5,0,0}, glm::vec3{0}, glm::vec3{10} };
     std::unique_ptr<Actor>ogreActor = std::make_unique<Actor>(ogreTransform, ogreModel, blueMat);
-    actors.push_back(std::move(ogreActor));
+    //actors.push_back(std::move(ogreActor));
 
-    Transform dragonTransform{ glm::vec3{10,0,0}, glm::vec3{0}, glm::vec3{10} };
+    Transform dragonTransform{ glm::vec3{5,0,0}, glm::vec3{0}, glm::vec3{10} };
     std::unique_ptr<Actor>dragonActor = std::make_unique<Actor>(dragonTransform, dragonModel, redMat);
     actors.push_back(std::move(dragonActor));
 
