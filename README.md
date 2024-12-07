@@ -2,7 +2,8 @@
 
 <img width="416" alt="SSPhong" src="https://github.com/user-attachments/assets/f2a9d718-29aa-4439-a7ab-da23292892f1">
 
-<img width="955" alt="SSRoom" src="https://github.com/user-attachments/assets/342ed54f-2abe-4dc1-ba3c-aeb8f2d105ea">
+<img width="663" alt="SSRayTracerFinalScene" src="https://github.com/user-attachments/assets/3637d020-b818-4089-870f-6cec6d03c9e9">
+
 
 Welcome to a study in C++ Computer Graphics. This repository contains two key projects that showcase advanced rendering techniques:
 
